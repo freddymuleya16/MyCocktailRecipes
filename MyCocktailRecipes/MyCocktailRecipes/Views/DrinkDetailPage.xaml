@@ -1,0 +1,532 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MyCocktailRecipes.Views.DrinkDetailPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:badge="clr-namespace:Syncfusion.XForms.BadgeView;assembly=Syncfusion.SfBadgeView.XForms"
+    xmlns:behavior="clr-namespace:MyCocktailRecipes.Behaviors"
+    xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:controls="clr-namespace:MyCocktailRecipes.Controls"
+    xmlns:converter="clr-namespace:MyCocktailRecipes.Converters"
+    xmlns:detailBehavior="clr-namespace:MyCocktailRecipes.Behaviors"
+    xmlns:helper="clr-namespace:MyCocktailRecipes.Helpers"
+    xmlns:local="clr-namespace:MyCocktailRecipes.Views"
+    xmlns:rating="clr-namespace:Syncfusion.SfRating.XForms;assembly=Syncfusion.SfRating.XForms"
+    xmlns:rotator="clr-namespace:Syncfusion.SfRotator.XForms;assembly=Syncfusion.SfRotator.XForms"
+    x:Name="detailPage"
+    Title="Detail page"
+    BackgroundColor="{OnIdiom Default={DynamicResource Gray-Bg},
+                              Desktop={DynamicResource Gray-100},
+                              Converter={StaticResource DynamicResourceToColorConverter}}"
+    NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Behaviors>
+        <detailBehavior:CartBehavior />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <DataTemplate x:Key="PortraitTemplate">
+                <Image
+                    Margin="3"
+                    Aspect="{OnIdiom Default=AspectFit,
+                                     Tablet=AspectFit}"
+                    BackgroundColor="{DynamicResource Gray-Bg}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.Source>
+                        <UriImageSource
+                            CacheValidity="14"
+                            CachingEnabled="true"
+                            Uri="{Binding .}" />
+                    </Image.Source>
+                </Image>
+            </DataTemplate>
+
+            <DataTemplate x:Key="LandscapeTemplate">
+                <Image
+                    Margin="3"
+                    Aspect="AspectFill"
+                    BackgroundColor="{DynamicResource Gray-200}"
+                    HeightRequest="350"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.Source>
+                        <UriImageSource
+                            CacheValidity="14"
+                            CachingEnabled="true"
+                            Uri="{Binding .}" />
+                    </Image.Source>
+                </Image>
+            </DataTemplate>
+
+            <ControlTemplate x:Key="DefaultTemplate">
+                <ScrollView>
+                    <ContentPresenter />
+                </ScrollView>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="DesktopDetailTemplate">
+                <ScrollView VerticalScrollBarVisibility="Never">
+                    <ContentPresenter />
+                </ScrollView>
+            </ControlTemplate>
+
+            <converter:BooleanToColorConverter x:Key="BoolToColorConverter" />
+            <converter:BooleanToStringConverter x:Key="BoolToStringConverter" />
+            <converter:DynamicResourceToColorConverter x:Key="DynamicResourceToColorConverter" />
+            <converter:VisibilityConverter x:Key="VisibilityConverter" />
+            <converter:IntToThicknessConverter x:Key="intToThicknessConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ControlTemplate>
+        <ControlTemplate>
+            <StackLayout Spacing="0">
+
+                <!--  Title View  -->
+                <controls:TitleView Title="Recipe">
+                    <controls:TitleView.LeadingView>
+                        <buttons:SfButton
+                            x:Name="backButton"
+                            Command="{Binding Path=BindingContext.BackButtonCommand, Source={x:Reference detailPage}}"
+                            CommandParameter="{x:Reference backButton}"
+                            Style="{StaticResource IconButtonStyle}"
+                            Text="{StaticResource Back}" />
+                    </controls:TitleView.LeadingView>
+
+                </controls:TitleView>
+
+                <ContentPresenter />
+
+            </StackLayout>
+        </ControlTemplate>
+    </ContentPage.ControlTemplate>
+
+
+    <ContentPage.Content>
+        <ContentView ControlTemplate="{StaticResource DefaultTemplate}">
+            <Grid
+                Margin="{OnIdiom Default=0,
+                                 Desktop='24,24,24,0'}"
+                Padding="{OnIdiom Default=0,
+                                  Desktop=16}"
+                BackgroundColor="{OnIdiom Desktop={DynamicResource Gray-Bg},
+                                          Converter={StaticResource DynamicResourceToColorConverter}}"
+                ColumnSpacing="{OnIdiom Default=0,
+                                        Desktop=16}"
+                RowSpacing="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{OnIdiom Phone=400, Tablet=500, Desktop=*}" />
+                    <RowDefinition Height="{OnIdiom Default=*, Desktop=0}" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{OnIdiom Desktop=0.4*, Default=*}" />
+                    <ColumnDefinition Width="{OnIdiom Desktop=0.6*, Default=0}" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Product images  -->
+                <rotator:SfRotator
+                    x:Name="Rotator"
+                    BackgroundColor="{OnIdiom Default={DynamicResource Gray-Bg},
+                                              Tablet={DynamicResource Gray-100},
+                                              Converter={StaticResource DynamicResourceToColorConverter}}"
+                    DotPlacement="OutSide"
+                    DotsBorderColor="Transparent"
+                    EnableLooping="False"
+                    HorizontalOptions="Center"
+                    ItemTemplate="{StaticResource PortraitTemplate}"
+                    ItemsSource="{Binding PreviewImages}"
+                    NavigationStripMode="Dots"
+                    SelectedDotColor="{DynamicResource PrimaryColor}"
+                    UnselectedDotColor="{DynamicResource Gray-200}"
+                    VerticalOptions="Start" />
+
+                <ContentView
+                    Grid.Row="{OnIdiom Default=1,
+                                       Desktop=0}"
+                    Grid.Column="{OnIdiom Default=0,
+                                          Desktop=1}"
+                    ControlTemplate="{OnIdiom Desktop={StaticResource DesktopDetailTemplate}}">
+                    <Grid
+                        BackgroundColor="{DynamicResource Gray-Bg}"
+                        ColumnSpacing="0"
+                        RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, 4* "
+                        RowSpacing="0">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{OnIdiom Default=16, Desktop=0}" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="16" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Product Name  -->
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Phone='0,0,0,2',
+                                             Desktop='0,8,0,0',
+                                             Tablet='0,16,0,0'}"
+                            HorizontalOptions="StartAndExpand"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="1"
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="{Binding strDrink}" />
+
+                        <!--  Product Summary  -->
+                        
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="5"
+                            helper:RTLHelper.Margin="{OnIdiom Default='0,0,3,2',
+                                                              Tablet='0,8,3,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="5"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strAlcoholic,StringFormat='is an {0} drink '}" />
+                        
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="5"
+                            helper:RTLHelper.Margin="{OnIdiom Default='0,0,3,2',
+                                                              Tablet='0,8,3,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="5"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strCategory,StringFormat='falling under the category of {0}'}" />
+
+
+                        <Label
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="5"
+                            helper:RTLHelper.Margin="{OnIdiom Default='0,0,3,2',
+                                                              Tablet='0,8,3,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="5"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strGlass,StringFormat='best served in {0}'}" />
+
+
+                        <StackLayout
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Phone='0,0,0,10',
+                                             Tablet='0,13,0,10',
+                                             Desktop=0}"
+                            Orientation="Horizontal"
+                            Spacing="2">
+
+                           
+
+                        </StackLayout>
+
+                       
+                        <BoxView
+                            Grid.Row="{OnIdiom Default=5,
+                                               Phone=4}"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="6"
+                            HeightRequest="{OnIdiom Tablet=24,
+                                                    Desktop=8,
+                                                    Phone=16}"
+                            Style="{StaticResource HorizontalSeparatorStyle}"
+                            Color="{OnIdiom Default={DynamicResource Gray-100},
+                                            Desktop={DynamicResource Gray-Bg},
+                                            Converter={StaticResource DynamicResourceToColorConverter}}" />
+
+                        <!--  Size Label  -->
+                        <Label
+                            Grid.Row="{OnIdiom Default=6,
+                                               Phone=5}"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            Margin="{OnIdiom Default='0,16',
+                                             Desktop='0,0,0,16'}"
+                            HorizontalOptions="Start"
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Instructions" />
+                        
+                        <Label
+                            Grid.Row="{OnIdiom Default=7,
+                                               Phone=6}"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="5"
+                            Margin="{OnIdiom Default='0,16',
+                                             Desktop='0,0,0,16'}"
+                            MaxLines="5"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"                            
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strInstructions}" />
+                        
+
+                        
+
+                        
+
+                        <StackLayout
+                            Grid.Row="{OnIdiom Default=4,
+                                               Phone=7}"
+                            Grid.Column="{OnIdiom Default=1,
+                                                  Phone=0}"
+                            Grid.ColumnSpan="{OnIdiom Default=4,
+                                                      Phone=6}"
+                            Padding="0,16"
+                            BackgroundColor="{OnIdiom Default={DynamicResource Gray-Bg},
+                                                      Phone={DynamicResource Gray-100},
+                                                      Converter={StaticResource DynamicResourceToColorConverter}}"
+                            Orientation="Horizontal"
+                            Spacing="10">
+
+                          
+                        </StackLayout>
+
+                        <!--  Product Description  -->
+                        <Label
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            Margin="0,16,0,8"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Ingredients"
+                            VerticalOptions="Start" />
+
+                        <Label
+                            Grid.Row="10"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient1}" />
+                        <Label
+                            Grid.Row="10"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="3"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure1}" />
+
+                        <Label
+                            Grid.Row="11"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient2}" />
+                        <Label
+                            Grid.Row="11"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure2}" />
+
+                        <Label
+                            Grid.Row="12"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient3}" />
+                        <Label
+                            Grid.Row="12"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure3}" />
+
+                        <Label
+                            Grid.Row="13"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient4}" />
+                        <Label
+                            Grid.Row="13"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure4}" />
+
+                        <Label
+                            Grid.Row="14"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient5}" />
+                        <Label
+                            Grid.Row="14"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure5}" />
+
+                        <Label
+                            Grid.Row="15"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient6}" />
+                        <Label
+                            Grid.Row="15"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure6}" />
+
+                        <Label
+                            Grid.Row="16"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient7}" />
+                        <Label
+                            Grid.Row="16"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure7}" />
+
+                        <Label
+                            Grid.Row="17"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient8}" />
+                        <Label
+                            Grid.Row="17"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure8}" />
+
+                        <Label
+                            Grid.Row="18"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strIngredient9}" />
+                        <Label
+                            Grid.Row="18"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Margin="{OnIdiom Default='0,0,0,16',
+                                             Desktop='0,8'}"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            Style="{StaticResource DescriptionLabelStyle}"
+                            Text="{Binding strMeasure9}" />
+
+                        <BoxView
+                            Grid.Row="19"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="6"
+                            HeightRequest="{OnIdiom Tablet=24,
+                                                    Default=16}"
+                            Style="{StaticResource HorizontalSeparatorStyle}"
+                            Color="{OnIdiom Default={DynamicResource Gray-100},
+                                            Desktop={DynamicResource Gray-Bg},
+                                            Converter={StaticResource DynamicResourceToColorConverter}}" />
+
+                        <!--  Rating and Reviews  -->
+                        <!--<local:FeedbackView
+                            Grid.Row="12"
+                            Grid.ColumnSpan="5"
+                            IsVisible="{Binding IsReviewVisible, Converter={StaticResource VisibilityConverter}}" />
+                        <Label
+                            Grid.Row="12"
+                            Grid.ColumnSpan="5"
+                            IsVisible="{Binding IsReviewVisible}"
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Be the 1st one to review"
+                            VerticalOptions="CenterAndExpand" />-->
+
+                    </Grid>
+                </ContentView>
+
+            </Grid>
+        </ContentView>
+    </ContentPage.Content>
+
+</ContentPage>
